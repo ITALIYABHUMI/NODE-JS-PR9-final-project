@@ -1,0 +1,25 @@
+const passport = require('passport')
+const registertbl = require('./form')
+var JwtStrategy = require('passport-jwt').Strategy,
+    ExtractJwt = require('passport-jwt').ExtractJwt;
+var opts = {}
+
+opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.secretOrKey = 'logindata';
+
+passport.use(new JwtStrategy(opts, async function (jwt_payload, done) {
+    console.log(jwt_payload.payload);
+    try {
+        let User = await registertbl.findOne({ id: jwt_payload.payload.id });
+        if (User) {
+            done(null, User);
+        } else {
+            done(null, false)
+        }
+    } catch (err) {
+        console.log(err);
+        return false;
+    }
+}));
+
+module.exports = passport;
