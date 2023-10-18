@@ -1,25 +1,30 @@
 const categorytbl = require('../model/category')
-const subcategorytbl = require('../model/subcategory')
 const prodctTbl = require('../model/product')
 const path = require('path')
+const fs = require('fs')
 
 const product = async (req, res) => {
     try {
         const { categoryId, subcategoryId, name, price, qty, description } = req.body;
-        let productdata = await prodctTbl.create({
-            categoryId: categoryId,
-            subcategoryId: subcategoryId,
-            name: name,
-            price: price,
-            qty: qty,
-            description: description,
-            image: req.file.path
-        });
-        if (productdata) {
-            return res.json({ messege: "product is added", status: 1 })
+        if (categoryId, subcategoryId, name, price, qty, description == "") {
+            let productdata = await prodctTbl.create({
+                categoryId: categoryId,
+                subcategoryId: subcategoryId,
+                name: name,
+                price: price,
+                qty: qty,
+                description: description,
+                image: req.file.path
+            });
+            if (productdata) {
+                return res.json({ messege: "product is added", status: 1 })
+            }
+            else {
+                return res.json({ messege: "product not added", status: 0 })
+            }
         }
-        else {
-            return res.json({ messege: "product not added", status: 0 })
+        else{
+            return res.json({ messege: "field can't be blank", status: 0 })
         }
     }
     catch (err) {
@@ -61,6 +66,7 @@ const productdelete = async (req, res) => {
         const id = req.body.id;
         let data = await prodctTbl.findByIdAndDelete(id);
         if (data) {
+            fs.unlinkSync(data.image)
             return res.json({ messege: "product is deleted", status: 1 });
         }
         else {
@@ -71,38 +77,33 @@ const productdelete = async (req, res) => {
         console.log(err);
     }
 }
-// let results = await prodctTbl.find({}).populate('categoryId').populate('subcategoryId');
 
 const productview = async (req, res) => {
     try {
-
+        // let results = await prodctTbl.find({}).populate('categoryId').populate('subcategoryId');
         const results = await categorytbl.aggregate([
             {
                 $lookup: {
                     from: 'subcategories',
                     localField: '_id',
                     foreignField: 'categoryId',
-                    as: 'subcategoryview',
+                    as: 'subcategory',
                 },
             },
-            {
-                $unwind: "$subcategoryview"
+            { 
+                $unwind: "$subcategory"
             },
-            {
+            { 
                 $lookup: {
                     from: 'products',
-                    localField: '_id',
-                    foreignField: 'categoryId',
-                    as: 'productview',
+                    localField: 'subcategory._id',
+                    foreignField: 'subcategoryId',
+                    as: 'product',
                 },
-            },
-            {
-                $unwind: "$productview"
-            },
-
+            }
         ]);
-        if (results) {
-            return res.json({ "product": results, status: 1 });
+        if (results) { 
+            return res.json({ "category": results, status: 1 });
         }
         else {
             return res.json({ messege: "subcategory is no fathed", status: 0 });

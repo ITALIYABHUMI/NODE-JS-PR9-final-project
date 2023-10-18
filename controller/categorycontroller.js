@@ -22,7 +22,7 @@ const category = async (req, res) => {
 
         }
         else {
-            return res.json({ messege: "category is can't empty", status: 0 })
+            return res.json({ messege: "category can't empty", status: 0 })
         }
 
     }

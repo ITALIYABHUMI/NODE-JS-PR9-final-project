@@ -4,15 +4,20 @@ const subcategorytbl = require('../model/subcategory');
 const subcategory = async (req, res) => {
     try {
         const { categoryId, subcategory } = req.body;
-        let subcategorydata = await subcategorytbl.create({
-            categoryId: categoryId,
-            subcategory: subcategory
-        });
-        if (subcategorydata) {
-            return res.json({ messege: "subcategory is added", status: 1 })
+        if (categoryId, subcategory != "") {
+            let subcategorydata = await subcategorytbl.create({
+                categoryId: categoryId,
+                subcategory: subcategory
+            });
+            if (subcategorydata) {
+                return res.json({ messege: "subcategory is added", status: 1 })
+            } 
+            else {
+                return res.json({ messege: "subcategory is not added", status: 0 })
+            }
         }
         else {
-            return res.json({ messege: "subcategory is not added", status: 0 })
+            return res.json({ messege: "field can't be blank", status: 0 })
         }
     }
     catch (err) {
@@ -79,7 +84,7 @@ const subcategoryview = async (req, res) => {
     }
     catch (err) {
         console.log(err);
-    } 
+    }
 }
 
 module.exports = {

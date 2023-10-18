@@ -11,6 +11,7 @@ const indexcontroller = require('../controller/indexcontroller')
 const categorycontroller = require('../controller/categorycontroller')
 const subcategorycontroller = require('../controller/subcategorycontroller')
 const productcontroller = require('../controller/productcontroller')
+const cartcontroller = require('../controller/cartcontroller')
 
 const fileUpload = multer.diskStorage({
     destination : (req,res,cb) => {
@@ -44,5 +45,9 @@ route.post('/product',imageUpload, productcontroller.product);
 route.delete('/productdelete', productcontroller.productdelete);
 route.put('/productupdate', imageUpload,productcontroller.productupdate);
 route.get('/productview', productcontroller.productview);
+
+route.post('/cart',cartcontroller.cart);
+route.delete('/cartdelete', cartcontroller.cartdelete);
+route.get('/cartview', cartcontroller.cartview);
 
 module.exports = route;       
