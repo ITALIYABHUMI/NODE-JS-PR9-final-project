@@ -6,7 +6,7 @@ const fs = require('fs')
 const product = async (req, res) => {
     try {
         const { categoryId, subcategoryId, name, price, qty, description } = req.body;
-        if (categoryId, subcategoryId, name, price, qty, description == "") {
+        if (categoryId, subcategoryId, name, price, qty, description != "") {
             let productdata = await prodctTbl.create({
                 categoryId: categoryId,
                 subcategoryId: subcategoryId,
@@ -36,8 +36,6 @@ const product = async (req, res) => {
 
 const productupdate = async (req, res) => {
     try {
-        console.log(req.body);
-        console.log(req.file);
         const { id, categoryId, subcategoryId, name, price, qty, description } = req.body;
         let data = await prodctTbl.findByIdAndUpdate(id, {
             categoryId: categoryId,

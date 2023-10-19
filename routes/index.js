@@ -48,6 +48,7 @@ route.get('/productview', productcontroller.productview);
 
 route.post('/cart',cartcontroller.cart);
 route.delete('/cartdelete', cartcontroller.cartdelete);
-route.get('/cartview', cartcontroller.cartview);
+route.put('/cartupdate',imageUpload, cartcontroller.cartupdate);
+route.get('/cartview',cartcontroller.cartview);
 
 module.exports = route;       

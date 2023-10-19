@@ -1,5 +1,6 @@
 const cartTbl = require('../model/cart')
 const productTbl = require('../model/product')
+const path = require('path');
 
 const cart = async (req, res) => {
     try {
@@ -11,14 +12,14 @@ const cart = async (req, res) => {
         else {
             if (product) {
                 const cartdata = await cartTbl.create({
-                    productId: req.body.id,
+                    productId: req.body.productId,
                     name: product.name,
                     price: product.price,
                     qty: product.qty,
                     description: product.description,
                     image: product.image
                 });
-                return res.json({ messege: "product is added in cart", status:  1});
+                return res.json({ messege: "product is added in cart", status: 1 });
             }
             else {
                 return res.json({ messege: "product not added in cart", status: 0 });
@@ -63,9 +64,32 @@ const cartview = async (req, res) => {
     }
 }
 
+const cartupdate = async (req, res) => {
+    try {
+        const { id, productId, name, price, qty, description } = req.body;
+        let cartdata = await cartTbl.findByIdAndUpdate(id, {
+            productId: productId,
+            name: name,
+            price: price,
+            qty: qty,
+            description: description,
+            image :req.file.path
+        });
+        if (cartdata) {
+            return res.json({ message : "cart is updated", status: 1 });
+        }
+        else{
+            return res.json({ message : "cart is not updated", status: 1 });
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
 
 module.exports = {
     cart,
     cartdelete,
-    cartview
+    cartview,
+    cartupdate
 }
